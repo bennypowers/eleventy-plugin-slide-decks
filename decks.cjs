@@ -5,12 +5,12 @@ const mime = require('mime-types');
 
 /**
  * @param {string} content HTML content of the page
- * @selector {string} selector CSS selector (all) to apply `reveal` attr to
+ * @param {string} selector CSS selector (all) to apply `reveal` attr to
  *
  */
 function addRevealAttrs(content, selector) {
   if (!selector) return content;
-  const $ = cheerio.load(content);
+  const $ = cheerio.load(content, null, false);
   $(selector).each(function() {
     const closest = $(this).closest('[slot="notes"]');
     if (!closest.length)
@@ -19,13 +19,22 @@ function addRevealAttrs(content, selector) {
   return $.html();
 }
 
-async function copyDeckLayout(eleventyConfig, options, { dir }) {
+/**
+ * @param {import('@11ty/eleventy/src/UserConfig')} _eleventyConfig
+ * @param {EleventyPluginSlideDecksOptions} _options Options for the decks
+ * @param {*} outputOpts
+ */
+async function copyDeckLayout(_eleventyConfig, _options, { dir }) {
   const INPUT = path.join(__dirname, 'templates', 'deck.html');
   const OUTPUT = path.join(process.cwd(), dir.includes, 'deck.html');
   await fs.cp(INPUT, OUTPUT, {force: true});
 }
 
-/** Bundle Slidem deck dependencies */
+/**
+ * Bundle Slidem deck dependencies
+ * @param {import('@11ty/eleventy/src/UserConfig')} eleventyConfig
+ * @param {EleventyPluginSlideDecksOptions} options Options for the decks
+ */
 const bundleSlidemDependencies = async (eleventyConfig, options) =>
   import('./scripts/bundle.js')
     .then(m => m.bundle(eleventyConfig, options));
