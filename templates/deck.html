@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ title }}</title>
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <meta name="theme-color" content="#464a5b">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="{{ title }}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="{{ title }}">
+    <meta name="msapplication-TileImage" content="{{ '/assets/images/manifest/icon-144x144.png' | url }}">
+    <meta name="msapplication-TileColor" content="#464a5b">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="author" content="{{ author }}">
+    <meta name="date.created" content="01-2017">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="description" content="{{ description }}">
+
+    <meta property="og:title" content="{{ title }}">
+    <meta property="og:description" content="{{ description }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ title }}">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:url" content="{{ origin }}{{ page.url or '/'}}">
+    <meta property="og:image" content="{{ coverImage or '/assets/images/logo/bp-logo-dark@2x.png' }}">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:image:type" content="{{ coverImage | mime or 'image/png' }}">
+
+    {% for link in preconnect %}
+    <link rel="preconnect" href="{{ link }}">{% endfor %}
+
+    {% for icon in icons %}
+    <link rel="{{ icon.rel }}"{% if icon.sizes %} sizes="{{ icon.sizes }}"{% endif %} href="{{ icon.href | url }}">{% endfor %}
+    <link rel="manifest" href="{{ manifest or '/manifest.webmanifest' | url }}">
+
+    <noscript><style>:not(:defined) { display: initial; }</style></noscript>
+
+    {% for sheet in stylesheets %}
+    <link rel="stylesheet"{% if sheet.media %}
+          media="{{ sheet.media }}"{% endif %}{% if sheet.async %}
+          async{% endif %}
+          href="{{ sheet.href | url }}">
+    {% endfor %}
+
+    {% for script in scripts %}
+    <script {% if script.type -%}
+            type="{{ script.type }}"{%- endif -%}
+            src="{{ script.src | url }}"></script>
+    {% endfor %}
+
+    <script type="module" src="{{ '/assets/decks.min.js' | url }}"></script>
+    <style>{{ 'deck.css' | decksTemplate | safe }}</style>
+    <script type="module">{{ 'deck.js' | decksTemplate | safe }}</script>
+  </head>
+  <body class="deck">
+    <main>
+      <slidem-deck>
+        <sl-progress-bar slot="progress" id="slides-progress" indeterminate></sl-progress-bar>
+        {% for slide in collections.slides %}
+        {% if slide.deck == deck %}
+          <slidem-slide{% if slide.data.name %}
+              name="{{ slide.data.name }}"{% endif %}>
+          {{ slide.templateContent | reveal(slide.data.reveal) | safe }}
+        </slidem-slide>
+        {% endif %}
+        {% endfor %}
+      </slidem-deck>
+      {{ content | safe }}
+    </main>
+    <footer id="footer" class="screen-only">
+      <small id="legal">{{ copyright }}</small>
+    </footer>
+  </body>
+</html>
+
