@@ -45,15 +45,19 @@ Optional frontmatter keys:
 title: Slide deck title
 author: slide deck author (used in open graph tags)
 description: meta description (and og)
-origin: slide deck origin (used in og:url)
-coverImage: used in open graph tags
+lang: en # default
+dir: ltr # default
+date: 2022-12-02
+locale: en-US # default
+origin: https://bennypowers.dev # slide deck origin (used in og:url)
+coverImage: prezzo.png # used in open graph tags
 icons:
   - rel: icon # required
     href: /assets/images/favicon.ico?v=2 # required
   - rel: shortcut icon
     href: /assets/icon.svg
   - rel: apple-touch-icon
-    sizes: 72x72 # optional
+    sizes: 72x72
     href: /assets/images/manifest/icon-72x72.png
 preconnect:
   - https://fonts.googleapis.com

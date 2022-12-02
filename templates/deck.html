@@ -1,33 +1,33 @@
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="{{ lang or 'en' }}" dir="{{ dir or 'ltr' }}">
   <head>
     <meta charset="utf-8">
     <title>{{ title }}</title>
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
-    <meta name="theme-color" content="#464a5b">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,user-scalable=yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="application-name" content="{{ title }}">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="{{ title }}">
-    <meta name="msapplication-TileImage" content="{{ '/assets/images/manifest/icon-144x144.png' | url }}">
-    <meta name="msapplication-TileColor" content="#464a5b">
-    <meta name="msapplication-tap-highlight" content="no">
-    <meta name="author" content="{{ author }}">
-    <meta name="date.created" content="01-2017">
+    {% if author %}<meta name="author" content="{{ author }}">{% endif %}
+    {% if date %}<meta name="date.created" content="{{ date }}">{% endif %}
     <meta name="HandheldFriendly" content="true">
-    <meta name="description" content="{{ description }}">
-
+    {% if description %}
+    <meta name="description" content="{{ description | trim }}">
+    <meta property="og:description" content="{{ description | trim }}">
+    {% endif %}
     <meta property="og:title" content="{{ title }}">
-    <meta property="og:description" content="{{ description }}">
-    <meta property="og:type" content="website">
     <meta property="og:site_name" content="{{ title }}">
-    <meta property="og:locale" content="en_US">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="{{ locale or 'en-US' }}">
     <meta property="og:url" content="{{ origin }}{{ page.url or '/'}}">
-    <meta property="og:image" content="{{ coverImage or '/assets/images/logo/bp-logo-dark@2x.png' }}">
+    {% if coverImage %}
+    <meta property="og:image" content="{{ coverImage }}">
+    <meta property="og:image:type" content="{{ coverImage | mime }}">
+    <!-- TODO: calculate cover image dimensions -->
     <meta property="og:image:width" content="1024">
     <meta property="og:image:height" content="1024">
-    <meta property="og:image:type" content="{{ coverImage | mime or 'image/png' }}">
+    {% endif %}
 
     {% for link in preconnect %}
     <link rel="preconnect" href="{{ link }}">{% endfor %}
