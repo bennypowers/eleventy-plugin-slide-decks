@@ -1,22 +1,24 @@
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
 import { minifyHTMLLiteralsPlugin } from 'esbuild-plugin-minify-html-literals'
 
-const deps = new URL('./components.js', import.meta.url);
-
+/**
+ * @param {import('@11ty/eleventy/src/UserConfig')} eleventyConfig
+ * @param {EleventyPluginSlideDecksOptions} [options] Options for the decks
+ */
 export async function bundle(eleventyConfig, options) {
   const start = performance.now();
+  const prefix = '[eleventy-plugin-slide-decks]:';
 
   const { outfile = '_site/assets/decks.min.js', } = options ?? {};
 
-  eleventyConfig.logger.info('[eleventy-plugin-slide-decks]: bundling with esbuild');
+  eleventyConfig.logger.info(`${prefix} bundling with esbuild`);
 
   await build({
     outfile,
     entryPoints: [fileURLToPath(new URL('./components.js', import.meta.url))],
     format: 'esm',
+    target: 'es2022',
     bundle: true,
     minifySyntax: true,
     minifyWhitespace: true,
@@ -32,6 +34,7 @@ export async function bundle(eleventyConfig, options) {
     ],
   });
 
-  const d = (performance.now() - start) / 1000;
-  eleventyConfig.logger.info(`[eleventy-plugin-slide-decks]:   ...done bundling in ${d.toFixed(2)}s`);
+  const seconds = ((performance.now() - start) / 1000).toFixed(2);
+
+  eleventyConfig.logger.info(`${prefix}   ...done bundling in ${seconds}s`);
 }

@@ -1,11 +1,16 @@
-const deck = document.querySelector('slidem-deck');
-const progress = document.getElementById('slides-progress');
+const deck =
+  /** @type{import('slidem/slidem-deck.js').SlidemDeck} */
+  (document.querySelector('slidem-deck'));
+
+const progress =
+  /** @type{import('@shoelace-style/shoelace').SlProgressBar} */
+  (document.getElementById('slides-progress'));
 
 /** @param {Event} event */
 function isInputEvent(event) {
   return event
     .composedPath()
-    .some(x => (
+    .some(/** @param {HTMLElement} x*/ x => (
          x.contentEditable === 'true'
       || x instanceof HTMLInputElement
       || x instanceof HTMLTextAreaElement
@@ -29,10 +34,11 @@ document.body.addEventListener('keydown', event => {
 });
 
 deck.addEventListener('change', event => {
-  const curr = deck.currentSlide + 1;
+  const curr = deck.currentSlideIndex + 1;
   const total = deck.slides.length;
   const oneSlide = (1 / total) * 100;
-  const { steps, step } = deck.querySelector('[active]');
+  const { steps, step } =
+    /** @type {import('slidem/slidem-slide.js').SlidemSlide} */(deck.currentSlide);
   // Add in a fraction of one slide's worth of progress, if there are slide steps
   const stepProgress = steps <= 1 ? 0 : (((step / steps) * oneSlide) - oneSlide);
   const percentage = ((curr / total) * 100);
@@ -40,5 +46,6 @@ deck.addEventListener('change', event => {
 });
 
 await customElements.whenDefined('slidem-deck');
+
 progress.indeterminate = false;
 
