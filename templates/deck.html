@@ -52,8 +52,41 @@
     {% endfor %}
 
     <script type="module" src="{{ '/assets/decks.min.js' | url }}"></script>
-    <style>{{ 'deck.css' | decksTemplate | safe }}</style>
-    <script type="module">{{ 'deck.js' | decksTemplate | safe }}</script>
+    <style>
+      body {
+        height: 100vh;
+        max-height: 100vh;
+        overflow: hidden;
+        max-width: 100vw;
+        padding: 0;
+      }
+
+      main { position: relative; }
+
+      main,
+      slidem-deck { height: 100%; }
+
+      #footer {
+        position: fixed;
+        font-size: 80%;
+        inset-block-end: 1em;
+        inset-inline-end: 1em;
+        z-index: 2;
+      }
+
+      #slides-progress {
+        --sl-border-radius-pill: 0;
+        --indicator-color: var(--deck-primary-color);
+        --height: 100%;
+        width: 100%;
+      }
+
+      slidem-deck::part(progress) {
+        width: 100%;
+        height: 5px;
+        top: 0;
+      }
+    </style>
   </head>
   <body class="deck">
     <main>
@@ -61,10 +94,9 @@
         <sl-progress-bar slot="progress" id="slides-progress" indeterminate></sl-progress-bar>
         {% for slide in collections.slides %}
         {% if slide.deck == deck %}
-          <slidem-slide{% if slide.data.name %}
-              name="{{ slide.data.name }}"{% endif %}>
+        <{{ slide.data.is or 'slidem-slide' }}{% if slide.data.name %} name="{{ slide.data.name }}"{% endif %}>
           {{ slide.templateContent | reveal(slide.data.reveal) | safe }}
-        </slidem-slide>
+        </{{ slide.data.is or 'slidem-slide' }}>
         {% endif %}
         {% endfor %}
       </slidem-deck>
