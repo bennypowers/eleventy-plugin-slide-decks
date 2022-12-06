@@ -148,6 +148,68 @@ Shadow Parts](https://developer.mozilla.org/en-US/docs/Web/CSS/::part):
 }
 ```
 
+##### `style` frontmatter
+
+Although using CSS is encouraged, you can also set styles on the slide element 
+with the `style` frontmatter key. If the value is a string, it will be dumped 
+into the `style` attribute:
+
+```md
+---
+style: 'color:hotpink'
+---
+...
+```
+```html
+<slidem-slide style="color:hotpink">
+<p>...</p>
+</slidem-slide>
+```
+
+But if you pass a YAML dictionary or a JSON object, it will be collapsed into a 
+style string for you:
+
+```md
+---
+style:
+  color: hotpink
+  font-size: 200%
+  animation: jazz-hands
+---
+...
+```
+```html
+<slidem-slide style="color:hotpink;font-size:200%;animation:jazz-hands">
+<p>...</p>
+</slidem-slide>
+```
+
+#### Extending `SlidemSlide`
+You might want to create your own custom slide types by extending `SlidemSlide`. 
+One case in which this is useful is in providing custom slots to a slide, like a 
+slide which presents a `<blockquote>` in a `<figure>` with the author in the 
+`<figcaption>`. In that case, you can specify the tag name to use for the slide 
+with the `is` frontmatter key:
+
+```md
+---
+is: slidem-quote
+---
+<p slot="quote">
+  All our work, our whole life is a matter of semantics, because words are the 
+  tools with which we work... Everything depends on our understanding of 
+  them.
+</p>
+
+<span slot="author">Felix Frankfurter</span>
+
+<img slot="portrait" alt="felix at the window" src="felix.jpg">
+```
+```html
+<slidem-quote><!-- etc --></slidem-quote>
+```
+
+
 ## Options
 
 | option             | type     | default   | description                                             |
