@@ -94,7 +94,9 @@
         <sl-progress-bar slot="progress" id="slides-progress" indeterminate></sl-progress-bar>
         {% for slide in collections.slides %}
         {% if slide.deck == deck %}
-        <{{ slide.data.is or 'slidem-slide' }}{% if slide.data.name %} name="{{ slide.data.name }}"{% endif %}>
+        <{{ slide.data.is or 'slidem-slide' }}
+            {%- if slide.data.name %} name="{{ slide.data.name }}"{% endif %}
+            {%- if slide.data.style %} style="{{ slide.data.style }}"{% endif %}>
           {{ slide.templateContent | reveal(slide.data.reveal) | safe }}
         </{{ slide.data.is or 'slidem-slide' }}>
         {% endif %}
