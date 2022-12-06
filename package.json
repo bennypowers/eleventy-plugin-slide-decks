@@ -23,10 +23,10 @@
   "dependencies": {
     "@shoelace-style/shoelace": "^2.0.0-beta.85",
     "cheerio": "^1.0.0-rc.12",
-    "esbuild": "^0.15.16",
+    "esbuild": "^0.15.18",
     "esbuild-plugin-minify-html-literals": "^1.0.1",
     "mime-types": "^2.1.35",
-    "slidem": "^2.0.0"
+    "slidem": "^2.0.1"
   },
   "devDependencies": {
     "@11ty/eleventy": "^2.0.0-canary.18"
