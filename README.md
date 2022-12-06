@@ -131,6 +131,17 @@ item, and on step 4, the image.
 
 #### Styling Slides
 
+You can set the classname for the slide with the `class` frontmatter key:
+
+```md
+---
+class: dark
+---
+```
+```html
+<slidem-slide class="dark"></slidem-slide>
+```
+
 Slides get the `name` attribute based on their filename, so `00-first-slide.md` 
 would render as `<slide-slide name="first-slide">`. You can then style that 
 slide with good-old CSS. Each slide exposes `container` and `content` [CSS 
