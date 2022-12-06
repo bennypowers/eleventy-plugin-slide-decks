@@ -97,6 +97,9 @@ module.exports = function decksPlugin(eleventyConfig, options) {
 
   eleventyConfig.addFilter('mime', url => mime.lookup(url));
   eleventyConfig.addFilter('trim', str => typeof str === 'string' ? str.trim() : str);
+  eleventyConfig.addFilter('stringifyCSSStyle', strOrObj =>
+      typeof strOrObj === 'string' ? strOrObj.trim()
+    : Object.entries(strOrObj).map(([k, v]) => `${k}:${v}`).join(';'));
 
   eleventyConfig.addFilter('decksTemplate', async p =>
     fs.readFile(path.join(__dirname, 'templates', p), 'utf-8'));
