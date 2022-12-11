@@ -55,6 +55,8 @@ const byInputPath = (a, b) =>
  * @typedef {object} EleventyPluginSlideDecksOptions
  * @prop {string}   [decksDir='decks'] directory off the 11ty input dir which contains slides
  * @prop {string[]} [assetsExtensions] file extensions to pass-through copy from the decks dir
+ * @prop {object}   [polyfills] which polyfills to load
+ * @prop {string}   [target=es2020] esbuild build target when bundling dependencies
  */
 
 /**
@@ -83,6 +85,7 @@ const byInputPath = (a, b) =>
 module.exports = function decksPlugin(eleventyConfig, options) {
   const {
     decksDir = 'decks',
+    polyfills = {},
     assetsExtensions = [
       'css',
       'jpeg',
@@ -94,6 +97,12 @@ module.exports = function decksPlugin(eleventyConfig, options) {
       'webp',
     ]
   } = options ?? {};
+
+  polyfills.constructibleStyleSheets ??= true;
+  polyfills.webcomponents ??= false;
+  polyfills.esmoduleShims ??= false;
+
+  eleventyConfig.addGlobalData('polyfills', polyfills);
 
   eleventyConfig.addFilter('mime', url => mime.lookup(url));
   eleventyConfig.addFilter('trim', str => typeof str === 'string' ? str.trim() : str);

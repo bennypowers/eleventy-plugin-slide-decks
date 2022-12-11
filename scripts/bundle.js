@@ -10,7 +10,10 @@ export async function bundle(eleventyConfig, options) {
   const start = performance.now();
   const prefix = '[eleventy-plugin-slide-decks]:';
 
-  const { outfile = '_site/assets/decks.min.js', } = options ?? {};
+  const {
+    outfile = '_site/assets/decks.min.js',
+    target = 'es2020',
+  } = options ?? {};
 
   eleventyConfig.logger.info(`${prefix} bundling with esbuild`);
 
@@ -18,7 +21,7 @@ export async function bundle(eleventyConfig, options) {
     outfile,
     entryPoints: [fileURLToPath(new URL('./components.js', import.meta.url))],
     format: 'esm',
-    target: 'es2022',
+    target: 'es2020',
     bundle: true,
     minifySyntax: true,
     minifyWhitespace: true,

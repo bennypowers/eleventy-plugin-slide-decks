@@ -51,7 +51,15 @@
             src="{{ script.src | url }}"></script>
     {% endfor %}
 
+    {% if polyfills.constructibleStylesheets -%}
+    <script type="module" src="https://unpkg.com/construct-style-sheets-polyfill"></script>{% endif %}
+    {% if polyfills.webcomponents -%}
+    <script type="module" src="https://unpkg.com/@webcomponents/webcomponentsjs@%5E2/"></script>{% endif %}
+    {% if polyfills.esmoduleShims -%}
+    <script async src="https://ga.jspm.io/npm:es-module-shims@1.6.2/dist/es-module-shims.js"></script>{% endif %}
+
     <script type="module" src="{{ '/assets/decks.min.js' | url }}"></script>
+
     <style>
       body {
         height: 100vh;

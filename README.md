@@ -223,10 +223,24 @@ is: slidem-quote
 
 ## Options
 
-| option             | type     | default   | description                                             |
-| ------------------ | -------- | --------- | ------------------------------------------------------- |
-| `decksDir`         | string   | 'decks'   | directory off the 11ty input dir which contains slides  |
-| `assetsExtensions` | string[] | see below | file extensions to pass-through copy from the decks dir |
+| option             | type     | default                  | description                                             |
+| ------------------ | -------- | ------------------------ | ------------------------------------------------------- |
+| `decksDir`         | string   | 'decks'                  | directory off the 11ty input dir which contains slides  |
+| `assetsExtensions` | string[] | see below                | file extensions to pass-through copy from the decks dir |
+| `target`           | boolean  | [esbuild target][target] | esbuild target to use when bundling slide dependencies  |
+| `polyfills`        | object   | see below                | polyfills to load on the decks page                     |
 
 By default, files matching `decks/**/*.{css|jpeg|jpg|js|mp4|png|svg|webp}` will 
 passthrough copy to the output dir.
+
+The `polyfills object` defaults to the following:
+
+```json
+{
+  "constructibleStyleSheets": true,
+  "webcomponents": false,
+  "esmoduleShims": false,
+}
+```
+
+[target]: https://esbuild.github.io/api/#target

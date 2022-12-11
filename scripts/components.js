@@ -51,7 +51,7 @@ deck.addEventListener('change', event => {
   progress.value = percentage + stepProgress;
 });
 
-await customElements.whenDefined('slidem-deck');
-
-progress.indeterminate = false;
-
+(async () => {
+  await customElements.whenDefined('slidem-deck');
+  progress.indeterminate = false;
+})();
