@@ -51,7 +51,7 @@
             src="{{ script.src | url }}"></script>
     {% endfor %}
 
-    {% if polyfills.constructibleStylesheets -%}
+    {% if polyfills.constructibleStyleSheets -%}
     <script type="module" src="https://unpkg.com/construct-style-sheets-polyfill"></script>{% endif %}
     {% if polyfills.webcomponents -%}
     <script type="module" src="https://unpkg.com/@webcomponents/webcomponentsjs@%5E2/"></script>{% endif %}

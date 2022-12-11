@@ -52,10 +52,17 @@ const byInputPath = (a, b) =>
   : 0;
 
 /**
+ * @typedef {object} Polyfills
+ * @prop {boolean}   [esmoduleShims=false] load the es-module-shims polyfills
+ * @prop {boolean}   [webcomponents=false] load the webcomponents polyfills
+ * @prop {boolean}   [constructibleStyleSheets=true] load the constructible stylesheets polyfills
+ */
+
+/**
  * @typedef {object} EleventyPluginSlideDecksOptions
  * @prop {string}   [decksDir='decks'] directory off the 11ty input dir which contains slides
  * @prop {string[]} [assetsExtensions] file extensions to pass-through copy from the decks dir
- * @prop {object}   [polyfills] which polyfills to load
+ * @prop {Polyfills}[polyfills] which polyfills to load
  * @prop {string}   [target=es2020] esbuild build target when bundling dependencies
  */
 
@@ -85,7 +92,6 @@ const byInputPath = (a, b) =>
 module.exports = function decksPlugin(eleventyConfig, options) {
   const {
     decksDir = 'decks',
-    polyfills = {},
     assetsExtensions = [
       'css',
       'jpeg',
@@ -98,6 +104,7 @@ module.exports = function decksPlugin(eleventyConfig, options) {
     ]
   } = options ?? {};
 
+  const polyfills = options?.polyfills ?? {};
   polyfills.constructibleStyleSheets ??= true;
   polyfills.webcomponents ??= false;
   polyfills.esmoduleShims ??= false;
@@ -130,3 +137,4 @@ module.exports = function decksPlugin(eleventyConfig, options) {
   /** bundle slidem deck dependencies */
   eleventyConfig.on('eleventy.before', bundleSlidemDependencies.bind(this, eleventyConfig, options));
 }
+
