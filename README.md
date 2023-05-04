@@ -70,6 +70,8 @@ scripts:
     type: module
 ```
 
+You can also provide an `importMap` as data, and it will print in the `<head>`.
+
 All urls are passed through the `url` filter for you.
 
 It's possible to put content in this file, but you should expect that content to 
