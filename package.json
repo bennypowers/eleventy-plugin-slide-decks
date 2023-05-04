@@ -1,6 +1,6 @@
 {
   "name": "eleventy-plugin-slide-decks",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Write slide decks using 11ty and share them over the web",
   "type": "module",
   "main": "decks.cjs",
