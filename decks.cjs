@@ -123,6 +123,8 @@ module.exports = function decksPlugin(eleventyConfig, options) {
   /** Add the `reveal` attribute to all elements matching the selector */
   eleventyConfig.addFilter('reveal', addRevealAttrs);
 
+  eleventyConfig.addFilter('byInputPath', byInputPath);
+
   for (const ext of assetsExtensions)
     eleventyConfig.addPassthroughCopy(`${decksDir}/**/*.${ext}`);
 
