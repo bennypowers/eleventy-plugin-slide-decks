@@ -1,0 +1,114 @@
+<!doctype html>
+<script webc:setup>
+  const getSlides = ($data, tag) =>
+    ($data.collections[tag] ?? []).sort((a, b) =>
+        a.inputPath < b.inputPath ? -1
+      : a.inputPath > b.inputPath ? 1
+      : 0) ?? [];
+  const getSlideAttrs = slide =>
+    (Object.entries(slide.data)
+      .filter(([x]) => /^name$|^class$|^style$/.test(x))
+      .map(([x, y]) => `${x}="${x !== 'style' ? y : stringifyCSSStyle(y ?? {})}"`)
+      .join(' ') + ` ${slide.data?.attrs ?? ''}`).trim();
+</script>
+<html :lang="lang ?? $data.lang ?? 'en'" :dir="dir ?? $data.dir ?? 'ltr'">
+  <head>
+    <meta charset="utf-8">
+    <title :text="title ?? $data.title"></title>
+    <meta name="application-name"
+         :content="title ?? $data.title">
+    <meta name="apple-mobile-web-app-title"
+         :content="title ?? $data.title">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="author"
+      :content="author ?? $data.author"
+      webc:if="authors ?? $data.author">
+    <meta name="date.created"
+      :content="date ?? $data.date"
+      webc:if="date ?? $data.date">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="description"
+      :content="(description ?? $data.description).trim()"
+      webc:if="description ?? $data.description">
+    <meta property="og:description"
+      :content="(description ?? $data.description).trim()"
+      webc:if="description ?? $data.description">
+    <meta property="og:title" :content="title ?? $data.title">
+    <meta property="og:site_name" :content="title ?? $data.title">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en-US">
+    <meta property="og:url" :content="`${$data.origin ?? ''}${$data.page.url || '/'}`">
+    <meta property="og:image" :content="$data.coverImage" webc:if="$data.coverImage">
+    <meta property="og:image:type" :content="mime($data.coverImage)" webc:if="$data.coverImage">
+    <!--- TODO: calculate cover image dimensions --->
+    <meta property="og:image:width" content="1024" webc:if="$data.coverImage">
+    <meta property="og:image:height" content="1024" webc:if="$data.coverImage">
+
+    <link rel="preconnect"
+          webc:for="link of preconnect ?? $data.preconnect ?? []"
+         :href="link">
+    <link webc:for="icon of icons ?? $data.icons ?? []"
+         :rel="icon.rel"
+         :sizes="icon.sizes ?? false"
+         :href="url(icon.href)">
+    <link rel="manifest"
+         :href="url(manifest ?? $data.manifest ?? '/manifest.webmanifest')">
+    <link rel="stylesheet" rel="slide-deck.css">
+    <link webc:for="sheet of stylesheets ?? $data.stylesheets ?? []" rel="stylesheet"
+         :media="sheet.media ?? false"
+         :async="sheet.async ?? false"
+         :href="url(sheet.href)">
+
+    <style @raw="getBundle('css')" webc:keep></style>
+
+    <script type="importmap"
+            webc:keep
+            webc:if="importMap ?? $data.importMap"
+            @raw="JSON.stringify(importMap ?? $data.importMap)"></script>
+    <script async
+            src="https://ga.jspm.io/npm:es-module-shims@1.7.2/dist/es-module-shims.js"
+            webc:if="$data.polyfills.esmoduleShims"
+            webc:keep></script>
+    <script webc:for="script of scripts ?? $data.scripts ?? []"
+           :type="script.type || false"
+           :src="url(script.src)"></script>
+    <script type="module" src="https://unpkg.com/construct-style-sheets-polyfill"
+            webc:if="$data.polyfills.constructibleStyleSheets"
+            webc:keep></script>
+    <script type="module" src="https://unpkg.com/@webcomponents/webcomponentsjs@%5E2/"
+            webc:if="$data.polyfills.webcomponents"
+            webc:keep></script>
+    <script type="module">import 'slidem';</script>
+
+    <script type="module"
+            @raw="getBundle('js')"
+            webc:keep></script>
+    <script type="module"
+            @raw="getBundle('js', 'after')"
+            webc:keep></script>
+
+    <noscript><style>:not(:defined) { display: initial; }</style></noscript>
+  </head>
+  <body class="deck">
+    <main>
+      <slidem-deck id="deck">
+        <sl-progress-bar slot="progress" id="slides-progress" indeterminate></sl-progress-bar>
+        <script webc:type="js"
+                webc:for="slide of getSlides($data, tag)">
+          const tag = slide.data.is || 'slidem-slide';
+          const template = /*html*/`
+        <${tag} ${getSlideAttrs(slide)}>
+          ${reveal(slide.templateContent, slide.data.reveal)}
+        </${tag}>\n`;
+           template;
+        </script>
+      </slidem-deck>
+    </main>
+    <footer id="footer" class="screen-only" webc:if="copyright ?? $data.copyright">
+      <small id="legal" @text="copyright ?? $data.copyright"></small>
+    </footer>
+  </body>
+</html>

@@ -85,6 +85,32 @@ be invisible, for example, you can put an SVG sprite sheet in there:
 </svg>
 ```
 
+### WebC Decks
+
+If you want to go buck wild, let loose; if you're so excited and you just can't 
+hide it, you can also (deep breaths) use the 
+[WebC](https://www.11ty.dev/docs/languages/webc/) deck component:
+
+```html
+---
+eleventyImport:
+  collections:
+    - webbyprezzy
+---
+<slide-deck webc:nokeep
+            webc:import="npm:eleventy-plugin-slide-decks"
+            @title="Super Webby Prezzy"
+            @date="2048-02-04"
+            @tag="webbyprezzy"></slide-deck>
+<script src="more-page-scripts.js"></script>
+<script src="load-me-last.js"
+        webc:bucket="after"></script>
+<link rel="stylesheet" href="webby-prezzy.css">
+```
+
+Don't leave out the eleventyImport or or the `webc:nokeep`, or else things will
+break in hilarious ways.
+
 ### Writing Slides
 
 Each decks slides are located in it's `slides` directory, and ordered by name. 
