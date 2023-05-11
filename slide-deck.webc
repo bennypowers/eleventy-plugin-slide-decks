@@ -14,7 +14,7 @@
 <html :lang="lang ?? $data.lang ?? 'en'" :dir="dir ?? $data.dir ?? 'ltr'">
   <head>
     <meta charset="utf-8">
-    <title :text="title ?? $data.title"></title>
+    <title @text="title ?? $data.title"></title>
     <meta name="application-name"
          :content="title ?? $data.title">
     <meta name="apple-mobile-web-app-title"
