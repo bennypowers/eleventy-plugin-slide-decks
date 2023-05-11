@@ -21,7 +21,7 @@ export async function bundle(eleventyConfig, options) {
     outfile,
     entryPoints: [fileURLToPath(new URL('./components.js', import.meta.url))],
     format: 'esm',
-    target: 'es2020',
+    target: 'es2022',
     bundle: true,
     minifySyntax: true,
     minifyWhitespace: true,
