@@ -5,11 +5,15 @@
         a.inputPath < b.inputPath ? -1
       : a.inputPath > b.inputPath ? 1
       : 0) ?? [];
-  const getSlideAttrs = slide =>
-    (Object.entries(slide.data)
+  const getSlideAttrs = slide => {
+    const format = attrs => typeof attrs === 'string' ? attrs : Object.entries(attrs??{})
+      .map(([x, y]) => `${x}="${y}"`)
+      .join(' ')
+    return (Object.entries(slide.data)
       .filter(([x]) => /^name$|^class$|^style$/.test(x))
       .map(([x, y]) => `${x}="${x !== 'style' ? y : stringifyCSSStyle(y ?? {})}"`)
-      .join(' ') + ` ${slide.data?.attrs ?? ''}`).trim();
+      .join(' ') + ` ${format(slide.data?.attrs)}`).trim();
+  }
 </script>
 <html :lang="lang ?? $data.lang ?? 'en'" :dir="dir ?? $data.dir ?? 'ltr'">
   <head>
@@ -94,7 +98,7 @@
   </head>
   <body class="deck">
     <main>
-      <slidem-deck id="deck">
+      <slidem-deck id="deck" @attributes>
         <sl-progress-bar slot="progress" id="slides-progress" indeterminate></sl-progress-bar>
         <script webc:type="js"
                 webc:for="slide of getSlides($data, tag)">
