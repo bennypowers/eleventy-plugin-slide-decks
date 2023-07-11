@@ -21,9 +21,9 @@
   "author": "Benny Powers <web@bennypowers.com>",
   "license": "ISC",
   "dependencies": {
-    "@shoelace-style/shoelace": "^2.4.0",
+    "@shoelace-style/shoelace": "^2.5.2",
     "cheerio": "^1.0.0-rc.12",
-    "esbuild": "^0.18.5",
+    "esbuild": "^0.18.11",
     "esbuild-plugin-minify-html-literals": "^1.0.5",
     "mime-types": "^2.1.35",
     "slidem": "^2.0.2"
