@@ -5,14 +5,14 @@
         a.inputPath < b.inputPath ? -1
       : a.inputPath > b.inputPath ? 1
       : 0) ?? [];
-  const getSlideAttrs = slide => {
+  const getSlideAttrs = (slide, i) => {
     const format = attrs => typeof attrs === 'string' ? attrs : Object.entries(attrs??{})
       .map(([x, y]) => `${x}="${y}"`)
-      .join(' ')
+      .join(' ');
     return (Object.entries(slide.data)
       .filter(([x]) => /^name$|^class$|^style$/.test(x))
       .map(([x, y]) => `${x}="${x !== 'style' ? y : stringifyCSSStyle(y ?? {})}"`)
-      .join(' ') + ` ${format(slide.data?.attrs)}`).trim();
+      .join(' ') + ` slide="${i + 1}" ${format(slide.data?.attrs)}`).trim();
   }
 </script>
 <html :lang="lang ?? $data.lang ?? 'en'" :dir="dir ?? $data.dir ?? 'ltr'">
@@ -101,10 +101,10 @@
       <slidem-deck id="deck" @attributes>
         <sl-progress-bar slot="progress" id="slides-progress" indeterminate></sl-progress-bar>
         <script webc:type="js"
-                webc:for="slide of getSlides($data, tag)">
+                webc:for="(slide, i) of getSlides($data, tag)">
           const tag = slide.data.is || 'slidem-slide';
           const template = /*html*/`
-        <${tag} ${getSlideAttrs(slide)}>
+        <${tag} ${getSlideAttrs(slide, i)}>
           ${reveal(slide.templateContent, slide.data.reveal)}
         </${tag}>\n`;
            template;
