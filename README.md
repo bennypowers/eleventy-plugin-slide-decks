@@ -1,3 +1,5 @@
+![Am Yisrael Chai - עם ישראל חי](https://bennypowers.dev/assets/flag.am.yisrael.chai.png)
+
 # eleventy-plugin-slide-decks
 
 🎼 It makes an *itsy-bitsy*, *teeny-weeny*, *web-component* slide deck prezzy, 
