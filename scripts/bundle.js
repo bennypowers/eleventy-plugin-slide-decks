@@ -2,8 +2,10 @@ import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
 import { minifyHTMLLiteralsPlugin } from 'esbuild-plugin-minify-html-literals'
 
+/** @import { UserConfig } from '@11ty/eleventy' */
+
 /**
- * @param {import('@11ty/eleventy/src/UserConfig')} eleventyConfig
+ * @param {UserConfig} eleventyConfig
  * @param {EleventyPluginSlideDecksOptions} [options] Options for the decks
  */
 export async function bundle(eleventyConfig, options) {

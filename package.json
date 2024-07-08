@@ -3,12 +3,9 @@
   "version": "0.4.0",
   "description": "Write slide decks using 11ty and share them over the web",
   "type": "module",
-  "main": "decks.cjs",
+  "main": "decks.js",
   "module": "decks.js",
-  "exports": {
-    "import": "./decks.cjs",
-    "require": "./decks.cjs"
-  },
+  "exports": "./decks.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,14 +18,15 @@
   "author": "Benny Powers <web@bennypowers.com>",
   "license": "ISC",
   "dependencies": {
-    "@shoelace-style/shoelace": "^2.5.2",
+    "@shoelace-style/shoelace": "^2.15.1",
     "cheerio": "^1.0.0-rc.12",
     "esbuild": "^0.18.11",
-    "esbuild-plugin-minify-html-literals": "^1.0.5",
+    "esbuild-plugin-minify-html-literals": "^2.0.0",
     "mime-types": "^2.1.35",
     "slidem": "^2.0.2"
   },
   "devDependencies": {
-    "@11ty/eleventy": "^2.0.1"
+    "@11ty/eleventy": "^2.0.1",
+    "typescript": "^5.5.3"
   }
 }

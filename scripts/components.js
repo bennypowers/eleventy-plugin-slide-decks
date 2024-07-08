@@ -5,11 +5,11 @@ export * from 'slidem/slidem-video-slide.js';
 import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.js';
 
 const deck =
-  /** @type{import('slidem/slidem-deck.js').SlidemDeck} */
+  /** @type {import('slidem/slidem-deck.js').SlidemDeck} */
   (document.querySelector('slidem-deck'));
 
 const progress =
-  /** @type{import('@shoelace-style/shoelace').SlProgressBar} */
+  /** @type {import('@shoelace-style/shoelace').SlProgressBar} */
   (document.getElementById('slides-progress'));
 
 /** @param {Event} event */
