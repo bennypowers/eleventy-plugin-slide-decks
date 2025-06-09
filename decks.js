@@ -3,6 +3,7 @@ import { basename } from 'node:path';
 import { load } from 'cheerio';
 import { lookup } from 'mime-types';
 import { bundle } from './scripts/bundle.js';
+import camelcase from 'camelcase';
 
 /** @import { UserConfig } from '@11ty/eleventy' */
 
@@ -14,7 +15,7 @@ import { bundle } from './scripts/bundle.js';
 function addRevealAttrs(content, selector) {
   if (!selector) return content;
   const $ = load(content, null, false);
-  $(selector).each(function() {
+  $(selector).each(function () {
     const closest = $(this).closest('[slot="notes"]');
     if (!closest.length)
       $(this).attr('reveal', '');
@@ -30,9 +31,9 @@ const assignMetadata = x => Object.assign(x, {
 });
 
 const byInputPath = (a, b) =>
-    a.inputPath < b.inputPath ? -1
-  : a.inputPath > b.inputPath ? 1
-  : 0;
+  a.inputPath < b.inputPath ? -1
+    : a.inputPath > b.inputPath ? 1
+      : 0;
 
 /**
  * @typedef {object} Polyfills
@@ -98,13 +99,85 @@ export async function slideDecksPlugin(eleventyConfig, options = {}) {
   eleventyConfig.addFilter('mime', url => lookup(url));
   eleventyConfig.addFilter('trim', str => typeof str === 'string' ? str.trim() : str);
   eleventyConfig.addFilter('stringifyCSSStyle', strOrObj =>
-      typeof strOrObj === 'string' ? strOrObj.trim()
-    : Object.entries(strOrObj).map(([k, v]) => `${k}:${v}`).join(';'));
+    typeof strOrObj === 'string' ? strOrObj.trim()
+      : Object.entries(strOrObj).map(([k, v]) => `${k}:${v}`).join(';'));
 
   /** Add the `reveal` attribute to all elements matching the selector */
   eleventyConfig.addFilter('reveal', addRevealAttrs);
 
   eleventyConfig.addFilter('byInputPath', byInputPath);
+
+  const templateDir = new URL('./templates/', import.meta.url);
+  for (const filename of await readdir(templateDir)) {
+    const content = await readFile(new URL(filename, templateDir), 'utf8')
+    eleventyConfig.addTemplate(`_includes/${filename}`, content, {
+      ...options?.templateData ?? {},
+      ...filename !== 'deck-base.html' && { layout: 'deck-base.html' },
+      eleventyExcludeFromCollections: ['slides'],
+      eleventyImport: {
+        collections: ['slides'],
+      },
+    });
+  }
+
+  eleventyConfig.addShortcode('transformSingleFileDeck', async function transformSingleFileDeck() {
+    // Parse slides
+    const lines = this.page.rawInput.split("\n");
+    const slides = [];
+    let current = null;
+    let content = '';
+
+    const stringifyAttrMap = attrs => Object.entries(attrs)
+      .map(([k, v]) => `${k}="${v.replace(/^(?:'|")(.*)(?:'|")$/, '$1')}"`).join(" ");
+
+    for (const line of lines) {
+      if (line.startsWith('#')) {
+        const { slideAttrs: { isSlide, tagName, ...slideAttrs }, tagAttrs } = line
+          .replace(/.*\{(?<attrs>[^}]+)\}.*/, '$<attrs>')
+          .trim()
+          .split(' ')
+          .reduce((acc, x) => {
+            const [key, val] = x.split('=');
+            if (key.startsWith('data-slide')) {
+              acc.slideAttrs.isSlide = true
+              const k = key.replace(/^data-slide-?/, '')
+              if (k) {
+                acc.slideAttrs[camelcase(k)] = val;
+              }
+            } else {
+              acc.tagAttrs[camelcase(key)] = val;
+            }
+            return acc
+          }, { tagAttrs: {}, slideAttrs: {} });
+        if (isSlide) {
+          if (current) {
+            slides.push(current);
+          }
+          const title = line.replace(/\{[^}]+\}/, '').trim();
+          const attrStr = stringifyAttrMap(tagAttrs)
+          current = { tagName, attrs: slideAttrs, content: `# ${title}${attrStr ? ` {${attrStr}}` : ''}\n`, };
+        } else if (current) {
+          current.content += line + "\n";
+        } else {
+          content += line + "\n";
+        }
+      } else if (current) {
+        current.content += line + "\n";
+      } else {
+        content += line + "\n";
+      }
+    }
+
+    if (current)
+      slides.push(current);
+
+    const rendered = await Promise.all(slides.map(async ({ tagName, attrs, content }) => {
+      const attrStr = stringifyAttrMap(attrs)
+      return `<${tagName}${attrStr ? ' ' + attrStr : ''}>${await eleventyConfig.javascript.functions.renderTemplate(content, 'md')}</${tagName}>`;
+    }));
+
+    return content + '\n' + rendered.join("\n");
+  });
 
   for (const ext of assetsExtensions)
     eleventyConfig.addPassthroughCopy(`${decksDir}/**/*.${ext}`);
@@ -115,23 +188,8 @@ export async function slideDecksPlugin(eleventyConfig, options = {}) {
     .map(assignMetadata)
     .sort(byInputPath));
 
-  const templateDir = new URL('./templates/', import.meta.url);
-  for (const filename of await readdir(templateDir)) {
-    eleventyConfig.addTemplate(
-      'deck.html',
-      await readFile(new URL(filename, templateDir), 'utf8'),
-      {
-        ...options?.templateData ?? {},
-        layout: false,
-        eleventyExcludeFromCollections: ['slides'],
-        eleventyImport: {
-          collections: ['slides'],
-        },
-      },
-    )
-  }
-
   /** bundle slidem deck dependencies */
   eleventyConfig.on('eleventy.before', bundle.bind(this, eleventyConfig, options));
 }
+
 
